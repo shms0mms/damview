@@ -1,12 +1,15 @@
-import { FC } from "react"
+import { cn } from "@/lib/utils"
+import { type FC } from "react"
 
-const Logo: FC = ({}) => {
-	return (
-		<div className="flex items-center text-lg">
-			<span className="font-bold">Dam</span>
-			<span className="text-destructive">View</span>
-		</div>
-	)
+type TLogoProps = {} & React.HTMLAttributes<HTMLDivElement>
+
+const Logo: FC<TLogoProps> = ({ className, ...props }) => {
+  return (
+    <div className={cn("flex items-center text-lg", className)} {...props}>
+      <span className='font-bold'>Dam</span>
+      <span className='text-destructive'>View</span>
+    </div>
+  )
 }
 
 export default Logo
