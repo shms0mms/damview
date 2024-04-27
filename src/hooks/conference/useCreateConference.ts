@@ -6,11 +6,17 @@ import type { TCreateConference } from "@/types/conference"
 import { toast } from "sonner"
 
 export const useCreateConference = () => {
-  return useMutation({
+  const { mutate: createConference, ...rest } = useMutation({
     mutationKey: ["createConference"],
-    mutationFn: (data: TCreateConference) => conferenceService.create(data),
+    mutationFn: (data: TCreateConference) =>
+      // conferenceService.create(data),
+      new Promise(resolve => resolve({ roomId: "asdf" })),
     onSuccess: () => {
-      toast.success("Conference created successfully")
+      toast.success("Конференция успешно создана!")
+    },
+    onError: () => {
+      toast.error("Не удалось создать конференцию.")
     },
   })
+  return { createConference, ...rest }
 }

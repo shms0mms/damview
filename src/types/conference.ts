@@ -1,7 +1,15 @@
 export type TConference = {
-  id: string
+  roomId: string
 }
-export type TCreateConference = {}
+export type TCreateConference = {
+  fullname: string
+  role: Role
+}
 export type TUpdateConference = {
-  id: string
+  roomId: string
+}
+
+export enum Role {
+  INTERVIEWER = "interviewer",
+  INTERVIEWEE = "interviewee",
 }

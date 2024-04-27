@@ -6,26 +6,16 @@ import type {
 } from "@/types/conference"
 
 export const conferenceService = {
-  async get(id: string) {
-    const response = await axios.get<TConference>(`/conference/${id}`)
-    return response.data
-  },
+  // async get(id: string) {
+  //   const response = await axios.get<TConference>(`/conference/${id}`)
+  //   return response.data
+  // },
 
   async create(data: TCreateConference) {
-    const response = await axios.post<TConference>(`/conference`, data)
-    return response.data
-  },
-
-  async update(data: TUpdateConference) {
-    const response = await axios.put<TConference>(
-      `/conference/${data.id}`,
+    const response = await axios.post<TConference>(
+      `/interview/create_room`,
       data
     )
-    return response.data
-  },
-
-  async delete(id: string) {
-    const response = await axios.delete<TConference>(`/conference/${id}`)
     return response.data
   },
 }
