@@ -1,8 +1,9 @@
 import { axios } from "@/api/interceptors"
 import type {
   TCreateConference,
-  TUpdateConference,
-  TConference,
+  TLogInConference,
+  TCreateConferenceResponse,
+  TLogInConferenceResponse,
 } from "@/types/conference"
 
 class ConferenceService {
@@ -13,9 +14,17 @@ class ConferenceService {
   private BASE_URL = "/interview"
 
   async create(data: TCreateConference) {
-    const response = await axios.post<TConference>(
+    const response = await axios.post<TCreateConferenceResponse>(
       `${this.BASE_URL}/create_room`,
       data
+    )
+    return response.data
+  }
+
+  async login(data: TLogInConference) {
+    const response = await axios.post<TLogInConferenceResponse>(
+      `/create_person/${data.roomId}`,
+      { fullname: data.fullname, role: data.role }
     )
     return response.data
   }

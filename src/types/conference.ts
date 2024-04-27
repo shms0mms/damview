@@ -14,6 +14,11 @@ export type TUpdateConference = {
   roomId: string
 }
 
+export type TLogInConference = {
+  roomId: string
+} & TCreateConference
+export type TLogInConferenceResponse = TCreateConferenceResponse
+
 export enum Role {
   INTERVIEWER = "interviewer",
   INTERVIEWEE = "interviewee",
