@@ -20,11 +20,10 @@ from .utils import *
 app = APIRouter(prefix="/interview", tags=["interview"])
 
 
-
-# _______________________messages_________________________________
-
-
-
+@app.get("/all2")
+async def alls( session:AsyncSession = Depends(get_session)):
+    a = await session.scalars(select(People))
+    return a.all()   
 @app.get("/last_messages/{roomId}")
 async def alls(roomId:uuid.UUID, session:AsyncSession = Depends(get_session)):
     messages = (await session.scalars(select(Messages).options(selectinload(Messages.user)).where(Messages.room_id == roomId)))
