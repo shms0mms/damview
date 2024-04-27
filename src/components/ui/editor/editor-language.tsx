@@ -23,7 +23,7 @@ const EditorLanguage: FC = ({}) => {
 	return (
 		<>
 			<Select
-				defaultValue={EnumLanguage.javascript}
+				defaultValue={EnumLanguage.python}
 				value={editorLanguage}
 				onValueChange={(value: EditorLanguage) => updateEditorLanguage(value)}
 			>
@@ -33,7 +33,6 @@ const EditorLanguage: FC = ({}) => {
 				<SelectContent>
 					<SelectGroup>
 						<SelectLabel>Языки программирования</SelectLabel>
-						<SelectItem value={EnumLanguage.javascript}>JavaScript</SelectItem>
 						<SelectItem value={EnumLanguage.python}>Python</SelectItem>
 					</SelectGroup>
 				</SelectContent>

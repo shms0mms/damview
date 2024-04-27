@@ -1,17 +1,22 @@
 "use client"
 import { ICON_SIZE } from "@/const/icon.const"
-import useDevice from "@/hooks/useDevice"
+import { cn } from "@/lib/utils"
+import { UIComponent } from "@/types/components"
 import { ClipboardCopy } from "lucide-react"
-import { FC, useState } from "react"
+import { FC } from "react"
 
-export interface IExampleData {
+export interface IExampleData extends UIComponent {
 	text: string
 	title: string
 }
 
-const ExampleData: FC<IExampleData> = ({ text, title }) => {
+const ExampleData: FC<IExampleData> = ({ text, title, className }) => {
 	return (
-		<div className="rounded-sm p-2 w-full relative flex flex-col bg-secondary gap-2">
+		<div
+			className={cn(
+				`rounded-sm p-2 w-full relative flex flex-col bg-secondary gap-2 ${className}`
+			)}
+		>
 			<button
 				type="button"
 				onClick={async () => {

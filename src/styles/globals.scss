@@ -74,6 +74,9 @@ html,
 body {
 	@apply w-full h-full;
 }
+body {
+	@apply overflow-hidden;
+}
 @layer base {
 	* {
 		@apply border-border;
@@ -83,8 +86,15 @@ body {
 	}
 }
 .separator {
-	@apply flex gap-5 h-full w-full;
+	@apply flex h-full w-full;
 }
 .skeleton {
 	@apply bg-accent-foreground opacity-30;
+}
+
+.CodeMirror.cm-s-material {
+	@apply h-full;
+}
+.cm-s-material {
+	@apply w-full;
 }

@@ -6,11 +6,13 @@ import { FC } from "react"
 
 const Task: FC<Task> = ({ description, id, name, examples }) => {
 	return (
-		<>
-			<Title>{name}</Title>
+		<div className="w-full h-full flex flex-col gap-5">
+			<Title>
+				{id}. {name}
+			</Title>
 			<Description>{description}</Description>
 			{examples?.length && examples.map(e => <Example {...e} key={e.id} />)}
-		</>
+		</div>
 	)
 }
 
