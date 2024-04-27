@@ -2,7 +2,7 @@ export type TConference = {
   roomId: string
 }
 export type TCreateConference = {
-  fullname: string
+  fio: string
   role: Role
 }
 export type TCreateConferenceResponse = {

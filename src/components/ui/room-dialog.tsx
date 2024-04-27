@@ -29,7 +29,7 @@ const RoomDialog = () => {
   const [open, setOpen] = useState<boolean>(_user ? false : true)
   const { register, handleSubmit, fields, updateField } =
     useForm<TLogInConference>({
-      defaultValues: { fullname: "", role: Role.INTERVIEWEE },
+      defaultValues: { fio: "", role: Role.INTERVIEWEE },
     })
   const { logInConference, user } = useLogInConference()
 
@@ -63,7 +63,7 @@ const RoomDialog = () => {
               minLength: { value: 3, message: "Введите корректное ФИО" },
             }}
             register={register}
-            name='fullname'
+            name='fio'
           />
           <Label className='mt-4'>Ваша роль</Label>
           <Select

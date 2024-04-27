@@ -19,7 +19,7 @@ const Form: FC = () => {
   const { handleSubmit, register, fields, updateField } =
     useForm<TCreateConference>({
       defaultValues: {
-        fullname: "",
+        fio: "",
         role: Role.INTERVIEWER,
       },
       mode: "onSubmit",
@@ -46,7 +46,7 @@ const Form: FC = () => {
       <Input
         placeholder='Введите ваше имя, фамилию и отчество...'
         register={register}
-        name={"fullname"}
+        name={"fio"}
       />
       <Label>Ваша роль</Label>
       <Select

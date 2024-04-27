@@ -23,8 +23,8 @@ class ConferenceService {
 
   async login(data: TLogInConference) {
     const response = await axios.post<TLogInConferenceResponse>(
-      `/create_person/${data.roomId}`,
-      { fullname: data.fullname, role: data.role }
+      `${this.BASE_URL}/create_person/${data.roomId}`,
+      { fio: data.fio, role: data.role }
     )
     return response.data
   }
