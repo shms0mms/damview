@@ -94,6 +94,8 @@ class Category(Base):
 
 
 class Examples(Base):
+    
+    __tablename__ = "examples"
     id:Mapped[int] = mapped_column(primary_key=True)
     
     enter:Mapped[str]

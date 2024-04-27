@@ -48,7 +48,7 @@ async def tasks_filter( city_filter:FilterTasks = fastapi_filter.FilterDepends(F
 # _______________________tasks_________________________________
 
 
-@app.get("/all_tasks",Optional[list[TaskSchema]])
+@app.get("/all_tasks")
 async def alls( session:AsyncSession = Depends(get_session)):
     a = await session.scalars(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)))
     return a.all()   
@@ -207,39 +207,43 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
             await websocket.accept()
         
             
-            
             await add_in_webscoket(room_id=room_id, type="chat",websocket=websocket,user_id=userId,session=session)
+            
 
+            w = await get_list(room_id=room_id, type="chat",websocket=websocket)
 
             people = []
-            for i in room.peoples:
-                people.append({"fio":i.fio, "role":i.role.value})
+            for i in w:
+                person = await session.scalar(select(People).where(People.id == i[0]))
+                people.append({"fio":person.fio, "role":person.role.value, "id":person.id})
 
-            await websocket.send_json(people)
+            await websocket.send_text(str(people))
             
-            try:
-            
-                    while True:
-                        
-                        text = await websocket.receive_text()
-                        w = await get_list(room_id=room_id, type="chat",websocket=websocket)
-                        async with ssession() as sess:
-                            message = Messages(room_id = room_id, user_id = userId, message = text)
-                            sess.add(message)
-                            await sess.flush()
+            async def handle_websocket(websocket, user):
+                
+                try:
+                
+                        while True:
                             
-                            message_id = message.id
-                            await sess.commit()
+                            text = await websocket.receive_text()
+                            w = await get_list(room_id=room_id, type="chat",websocket=websocket)
+                            async with ssession() as sess:
+                                message = Messages(room_id = room_id, user_id = userId, message = text)
+                                sess.add(message)
+                                await sess.flush()
+                                
+                                message_id = message.id
+                                await sess.commit()
 
-                        for websocket2 in w:
-                            await websocket2[1].send_json({"message":text, "fio":user.fio,"id":message_id})
+                            for websocket2 in w:
+                                await websocket2[1].send_json({"message":text, "fio":user.fio,"id":message_id})
 
             
-            except WebSocketDisconnect:
-            
-                    async with ssession() as sess:
-                        await delete_from_list(room_id=room_id, type="chat",websocket=websocket,user_id=userId, session=sess)
-
+                except WebSocketDisconnect:
+                
+                        async with ssession() as sess:
+                            await delete_from_list(room_id=room_id, type="chat",websocket=websocket,user_id=userId, session=sess)
+            await asyncio.gather(handle_websocket(websocket, user))
 
 
             
