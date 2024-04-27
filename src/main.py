@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from .db import engine, Base
 from .interview.router import app as interview_app
+from .interview.create_app import app as create_app
 
 app  = FastAPI()
 
 app.include_router(interview_app)
+app.include_router(create_app)
 
 
 

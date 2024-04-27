@@ -34,6 +34,10 @@ class Room(Base):
     peoples:Mapped[list["People"]] = relationship(uselist=True)
     code:Mapped[str] = mapped_column(nullable=True)
     
+    task_id:Mapped[int] = mapped_column(ForeignKey("tasks.id"), nullable=True)
+    
+    task:Mapped["Tasks"] = relationship(uselist=False)
+    
     
     
     # active_task:Mapped[int]  = 
@@ -53,4 +57,58 @@ class Messages(Base):
     
     
     message:Mapped[str]
+
+
+
+
+
+class CategoryTask(Base):
     
+    __tablename__ = "CategoryTask"
+    category_id:Mapped[int] = mapped_column(ForeignKey("category.id"),primary_key=True)
+    
+    task_id:Mapped[int] = mapped_column(ForeignKey("tasks.id"), primary_key=True)
+
+
+
+
+
+
+
+class Category(Base):
+    
+    __tablename__ = 'category'
+    
+    id:Mapped[int] = mapped_column(primary_key=True)
+
+    name:Mapped[str]
+    
+    tasks:Mapped[list["Tasks"]] =relationship(uselist=True,secondary="CategoryTask")
+    
+
+
+
+
+
+
+
+class Tasks(Base):
+    
+    __tablename__ = "tasks"
+    
+    id:Mapped[int] = mapped_column(primary_key=True)
+    
+        
+    name:Mapped[str]
+    
+    task:Mapped[str]
+    
+    exec_input:Mapped[str]
+    
+    exec_answer:Mapped[str]
+    
+    category:Mapped[list["Category"]] =relationship(uselist=True,secondary="CategoryTask")
+
+    params:Mapped[str]
+    
+    tests:Mapped[str]    

@@ -4,10 +4,11 @@ from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from .models import Messages, People, Room
+from .models import Messages, People, Room, Tasks
 from .schema import PeopleAdd, ResponeAfterCreate
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from ..db  import get_session,session as ssession
+from .utils import *
 
 
 app = APIRouter(prefix="/interview", tags=["interview"])
@@ -53,7 +54,7 @@ async def create_room(creater:PeopleAdd, session:AsyncSession = Depends(get_sess
     id_people = people.id
 
     await session.commit()
-    return {"roomId":ids, "role":"interviewer", "userId":id_people}
+    return {"roomId":ids, "role":"interviewer", "userId":id_people,"fio":creater.fio}
 
 
 
@@ -84,23 +85,31 @@ async def create_room(creater:PeopleAdd,roomId:uuid.UUID, session:AsyncSession =
     await session.commit()
     messages = (await session.scalars(select(Messages).options(selectinload(Messages.user)).where(Messages.room_id == roomId))).all()
     
-    return {"role":role, "userId":id_people, "roomMessages":messages}
+    return {"role":role, "userId":id_people, "roomMessages":messages,"fio":creater.fio}
 
 
 
-@app.get("run_python_code")
+@app.get("/run_python_code")
 async def run_python_code(code:str):
     
     return exec(code)
-    
+
+
+
 
 
 # ______________________________________________
 
 
 
-webosckets_chat = []
-webosckets_code = []
+
+@app.get("/run_python_code")
+async def run_python_code(code:str):
+    return exec(code)
+
+
+
+#___________________________________
 
 @app.websocket("/room/code/{userId}/{room_id}")
 async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:AsyncSession = Depends(get_session)):
@@ -109,8 +118,8 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
 
     if room and user:
     
-        webosckets_code.append([userId,websocket])
-        
+        await add_in_webscoket(room_id=room_id, type="code",websocket=websocket,user_id=userId)
+
         await websocket.accept()
         await websocket.send_text(str(room.code))   
             
@@ -119,22 +128,23 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
             try:
                 while True:
                     text = await websocket.receive_text()
-                    for websocket1 in webosckets_code:
+                    
+                    w = await get_list(room_id=room_id, type="code",websocket=websocket)
+                    
+                    for websocket1 in w:
+                    
                         await websocket1[1].send_text(text)
+                    
                     room.code = text
+                    
                     await session.commit()
                     
 
             except WebSocketDisconnect:
+
                 async with ssession() as sess:
-                    room2 = await sess.scalar(select(Room).options(selectinload(Room.messages),selectinload(Room.peoples)).where(Room.id == room_id))
-                    user = await session.scalar(select(People).where(People.id == userId))
-                
-                    webosckets_code.remove([userId,websocket])
-                    room2.peoples.remove(user)
-                    if len(webosckets_chat) == 0 and len(webosckets_code) == 0:
-                        await sess.delete(room2)
-                    await sess.commit()
+                    await delete_from_list(room_id=room_id, type="code",websocket=websocket,user_id=userId, session=sess)
+
 
 
 
@@ -144,10 +154,6 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
 # ______________________________________________
 
 
-
-@app.get("/")
-async def a():
-    return [len(webosckets_chat), len(webosckets_code) ,webosckets_chat, webosckets_code] 
 
 
 
@@ -164,7 +170,8 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
         
             
             
-            webosckets_chat.append([userId,websocket])
+            await add_in_webscoket(room_id=room_id, type="chat",websocket=websocket,user_id=userId)
+
             people = []
             for i in room.peoples:
                 people.append({"fio":i.fio, "role":i.role.value})
@@ -178,21 +185,27 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
                     while True:
                         
                         text = await websocket.receive_text()
-
-                        for websocket2 in webosckets_chat:
-                            await websocket2[1].send_json({"message":text, "fio":user.fio})
+                        w = await get_list(room_id=room_id, type="chat",websocket=websocket)
                         async with ssession() as sess:
                             message = Messages(room_id = room_id, user_id = userId, message = text)
                             sess.add(message)
+                            await sess.flush()
+                            
+                            message_id = message.id
                             await sess.commit()
+
+                        for websocket2 in w:
+                            await websocket2[1].send_json({"message":text, "fio":user.fio,"id":message_id})
 
             
                 except WebSocketDisconnect:
             
-                    webosckets_chat.remove([userId,websocket])
-                    room.peoples.remove(user)
-                    if len(webosckets_chat) == 0 and len(webosckets_code) == 0:
-                        await session.delete(room)
-                    await session.commit()
+                    async with ssession() as sess:
+                        await delete_from_list(room_id=room_id, type="chat",websocket=websocket,user_id=userId, session=sess)
+
+
 
             await asyncio.gather(handle_websocket(websocket, user))
+            
+            
+# ______________________________________________

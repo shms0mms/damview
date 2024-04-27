@@ -7,6 +7,7 @@ services:
     container_name: app
     depends_on:
       - db_in
+      - redisdb
 
     ports:
       - 8000:8000
@@ -18,5 +19,17 @@ services:
       - .env
     container_name: db
     ports:
-      - 5432:5432    
+      - 5432:5432 
+  redisdb:
+
+    image: redis
+    
+    container_name: redisdb
+
+    command: --port 6379
+    expose:
+      - 6379
+    
+    ports:
+      - 6379:6379 
 

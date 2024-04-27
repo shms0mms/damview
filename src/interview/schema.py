@@ -29,4 +29,18 @@ class ResponeAfterCreate(BaseModel):
     role:Role
     
     roomMessages:list[MessagesSchema] | list
+
+
+class TaskSchema(BaseModel):
     
+    name:str
+    
+    task:str
+    
+    exec_input:str
+    
+    exec_answer:str
+    
+    params:str
+    
+    tests:str  
