@@ -8,17 +8,15 @@ const Message: FC<Message> = ({ id, message, name, isMe }) => {
 	const firstName = name.split(" ")[0]
 	return (
 		<div
-			className={`flex items-center w-full gap-1 ${
-				!isMe && "justify-start flex-row-reverse"
-			}`}
+			className={`flex flex-col-reverse w-full gap-1 ${!isMe && "items-end"}`}
 		>
-			<div className={`flex items-center gap-1 ${!isMe && "flex-row-reverse"}`}>
+			<div className={`flex items-center gap-2 ${!isMe && "flex-row-reverse"}`}>
 				<Circle className="w-8 h-8">
 					<User width={ICON_SIZE.SM} height={ICON_SIZE.SM} />
 				</Circle>
-				<span className="text-xs opacity-30">{firstName}</span>
+				<div className="bg-secondary rounded-sm p-2 break-all ">{message}</div>
 			</div>
-			<div className="bg-secondary rounded-sm p-2 break-all ">{message}</div>
+			<span className="text-xs opacity-30">{firstName}</span>
 		</div>
 	)
 }

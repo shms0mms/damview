@@ -11,7 +11,6 @@ import "codemirror/theme/material.css"
 require("codemirror/mode/python/python")
 require("codemirror/addon/hint/show-hint.css")
 require("codemirror/addon/hint/show-hint.js")
-import {} from "prismjs/components/index"
 export interface IEditor {}
 
 const Editor: FC<IEditor> = ({}) => {
