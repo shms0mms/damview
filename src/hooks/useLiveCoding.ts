@@ -1,10 +1,9 @@
 "use client"
-import { ROOM_ID, USER_ID } from "@/const/app.const"
 import { env } from "@/env"
 import { useEffect } from "react"
 import useWebSocket from "react-use-websocket"
 
-const useLiveCoding = (userId: number = USER_ID, roomId: string = ROOM_ID) => {
+const useLiveCoding = (userId: number, roomId: string) => {
 	const { sendMessage, readyState, lastMessage, getWebSocket } = useWebSocket(
 		`${env.NEXT_PUBLIC_WEBSOCKET_URL}/interview/room/code/${userId}/${roomId}`
 	)

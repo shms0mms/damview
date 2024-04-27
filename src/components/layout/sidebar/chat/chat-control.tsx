@@ -23,34 +23,35 @@ const ChatControl: FC<IChatControl> = ({ sendMessage }) => {
 		withLocalStorage: ["message"],
 	})
 	const onSubmit: OnSubmitHandler<FormData> = data => {
-		updateField("message", {
-			...fields.message,
-			value: "",
-		})
-
-		if (data.message) sendMessage(data.message)
+		if (data.message) {
+			sendMessage(data.message)
+			updateField("message", {
+				...fields.message,
+				value: "",
+			})
+		}
 	}
 
 	const ref = useRef<HTMLInputElement>(null)
-	useEffect(() => {
-		const onKeyDown = (e: KeyboardEvent) => {
-			if (ref.current && e.key === "Enter") {
-				if (ref.current.value !== "") {
-					sendMessage(ref.current.value)
-					updateField("message", {
-						...fields.message,
-						value: "",
-					})
-				}
-			}
-		}
-		if (typeof window !== "undefined")
-			window.addEventListener("keydown", onKeyDown)
+	// useEffect(() => {
+	// 	const onKeyDown = (e: KeyboardEvent) => {
+	// 		if (ref.current && e.key === "Enter") {
+	// 			if (ref.current.value !== "") {
+	// 				sendMessage(ref.current.value)
+	// 				updateField("message", {
+	// 					...fields.message,
+	// 					value: "",
+	// 				})
+	// 			}
+	// 		}
+	// 	}
+	// 	if (typeof window !== "undefined")
+	// 		window.addEventListener("keydown", onKeyDown)
 
-		return () => {
-			window.removeEventListener("keydown", onKeyDown)
-		}
-	}, [ref.current && ref.current.value])
+	// 	return () => {
+	// 		window.removeEventListener("keydown", onKeyDown)
+	// 	}
+	// }, [ref.current && ref.current.value])
 	return (
 		<Form
 			handleSubmit={handleSubmit}
