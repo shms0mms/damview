@@ -1,10 +1,10 @@
 import BaseLayout from "@/components/layout/BaseLayout"
-import Editor from "@/components/ui/editor/editor"
+import Editor from "../../../components/ui/editor/editor"
 
 export default function EditorPage() {
-	return (
-		<BaseLayout>
-			<Editor />
-		</BaseLayout>
-	)
+  return (
+    <BaseLayout>
+      <Editor />
+    </BaseLayout>
+  )
 }

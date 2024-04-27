@@ -4,6 +4,8 @@ import { play } from "@/styles/fonts"
 import ThemeProvider from "@/providers/ThemeProvider"
 import EditorProvider from "@/providers/EditorProvider"
 import ResizeProvider from "@/providers/ResizeProvider"
+import ReactQueryProvider from "@/providers/ReactQueryProvider"
+import ToastProvider from "@/providers/ToastProvider"
 
 export const metadata: Metadata = {
   title: "Damview",
@@ -18,11 +20,15 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={play.className}>
-        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <ResizeProvider>
-            <EditorProvider>{children}</EditorProvider>
-          </ResizeProvider>
-        </ThemeProvider>
+        <ReactQueryProvider>
+          <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+            <ToastProvider>
+              <ResizeProvider>
+                <EditorProvider>{children}</EditorProvider>
+              </ResizeProvider>
+            </ToastProvider>
+          </ThemeProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   )

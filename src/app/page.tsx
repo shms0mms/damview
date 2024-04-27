@@ -5,27 +5,28 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card"
+import HomeForm from "@/components/ui/home-form"
 import Logo from "@/components/ui/logo"
 import { Check, Radio, Users } from "lucide-react"
 
 export default function Home() {
   return (
-    <main className='max-w-[1440px] w-full h-full'>
-      <div className='flex flex-col gap-12 items-center text-lg pt-40'>
+    <main className='max-w-[1440px] w-full h-full flex items-center justify-center'>
+      <div className='flex flex-col gap-8 items-center text-lg'>
         <div className='flex gap-4 flex-col items-center'>
           <h1>
             <Logo className='text-8xl' />
           </h1>
           <h3 className='text-xl opacity-65 max-w-96 text-center'>
-            Создавать конференции для собеседований еще никогда не было так
-            просто.
+            Создавать конференции для собеседований еще никогда не было так{" "}
+            <strong>просто</strong>.
           </h3>
         </div>
         <div className='text-2xl flex flex-col justify-center gap-2'>
           <span>Готовы начать?</span>
-          <Button>Начать</Button>
+          <HomeForm />
         </div>
-        <div className='flex flex-col items-center gap-4'>
+        <div className='mt-8 flex flex-col items-center gap-4'>
           <p>Почему мы?</p>
           <div className='grid grid-cols-3 gap-4 justify-center'>
             <Card>
