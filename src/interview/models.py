@@ -93,7 +93,14 @@ class Category(Base):
 
 
 
-
+class Examples(Base):
+    id:Mapped[int] = mapped_column(primary_key=True)
+    
+    enter:Mapped[str]
+    
+    out:Mapped[str]
+    
+    task_id:Mapped[int] = mapped_column(ForeignKey("tasks.id", ondelete="CASCADE"))
 
 
 
@@ -108,10 +115,8 @@ class Tasks(Base):
     
     task:Mapped[str]
     
-    exec_input:Mapped[str]
-    
-    
-    exec_answer:Mapped[str]
+
+    examples:Mapped[list["Examples"]] = relationship(uselist=True)
     
     dificalty:Mapped[Dif]
     

@@ -11,7 +11,7 @@ from .filters import FilterTasks
 
 
 from .models import Messages, People, Room, Tasks
-from .schema import PeopleAdd, ResponeAfterCreate
+from .schema import PeopleAdd, ResponeAfterCreate, TaskSchema
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from ..db  import get_session,session as ssession
 from .utils import *
@@ -21,10 +21,11 @@ from .tests_task import tests_task
 app = APIRouter(prefix="/interview", tags=["interview"])
 
 
-@app.get("/all2")
-async def alls( session:AsyncSession = Depends(get_session)):
-    a = await session.scalars(select(People))
-    return a.all()   
+
+# _______________________messages_________________________________
+
+
+
 @app.get("/last_messages/{roomId}")
 async def alls(roomId:uuid.UUID, session:AsyncSession = Depends(get_session)):
     messages = (await session.scalars(select(Messages).options(selectinload(Messages.user)).where(Messages.room_id == roomId)))
@@ -36,7 +37,7 @@ async def alls(roomId:uuid.UUID, session:AsyncSession = Depends(get_session)):
 # _______________________filter-tasks_________________________________
 @app.get("/filter_tasks")
 async def tasks_filter( city_filter:FilterTasks = fastapi_filter.FilterDepends(FilterTasks),session:AsyncSession = Depends(get_session)):
-    query = city_filter.filter(select(Tasks).options(Tasks.category))
+    query = city_filter.filter(select(Tasks).options(Tasks.category, selectinload(Tasks.examples)))
     result = await session.scalars(query)
     return result.all()
     
@@ -47,9 +48,9 @@ async def tasks_filter( city_filter:FilterTasks = fastapi_filter.FilterDepends(F
 # _______________________tasks_________________________________
 
 
-@app.get("/all_tasks")
+@app.get("/all_tasks",Optional[list[TaskSchema]])
 async def alls( session:AsyncSession = Depends(get_session)):
-    a = await session.scalars(select(Tasks).options(selectinload(Tasks.category)))
+    a = await session.scalars(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)))
     return a.all()   
 
 
@@ -58,7 +59,7 @@ async def alls(roomId:uuid.UUID, session:AsyncSession = Depends(get_session)):
     room = await session.scalar(select(Room).options(selectinload(Room.messages),selectinload(Room.peoples), selectinload(Room.task)).where(Room.id == roomId))
     
     if room.task_id:
-        task = await session.scalar(select(Tasks).options(selectinload(Tasks.category)).where(Tasks.id == room.task_id))
+        task = await session.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == room.task_id))
     
         return task
     return "No execercicess"
@@ -257,7 +258,7 @@ async def room_task(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
                     
                     id_task = num.get("num")
                     if id_task and type(id_task) == int:
-                        task = await session.scalar(select(Tasks).options(selectinload(Tasks.category)).where(Tasks.id == room.task_id))
+                        task = await session.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == room.task_id))
                         if task:
                             w = await get_list(room_id=room_id, type="chat",websocket=websocket)
                             for  i in w:

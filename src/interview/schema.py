@@ -30,7 +30,11 @@ class ResponeAfterCreate(BaseModel):
     role:Role
     
     roomMessages:list[MessagesSchema] | list
-
+class ExampleSchema(BaseModel):
+    
+    id:int
+    enter:str
+    out:str
 
 class TaskSchema(BaseModel):
     
@@ -38,9 +42,7 @@ class TaskSchema(BaseModel):
     
     task:str
     
-    exec_input:str
-    
-    exec_answer:str
+    examples:list[ExampleSchema]
     
     params:str
     

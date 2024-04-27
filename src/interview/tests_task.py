@@ -22,7 +22,7 @@ import json
 """
 
 async def tests_task(task_id:int,code:str, session:AsyncSession):
-    task:Tasks = await session.scalar(select(Tasks).options(selectinload(Tasks.category)).where(Tasks.id == task_id))
+    task:Tasks = await session.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == task_id))
     if task:
             code = f"def main({task.params}):\n" + code
             my_namespace = {}
