@@ -6,6 +6,8 @@ import { useSearchTasks } from "@/hooks/useSearchTasks"
 import type { TSearchTask } from "@/types/search-tasks"
 import type { ReactFunc } from "@/types/app"
 import type { Task } from "@/types/task"
+import { Button } from "@/components/ui/button"
+import { Search } from "lucide-react"
 
 type TSearchTaskProps = {
   setTasks: ReactFunc<Task[]>
@@ -17,10 +19,6 @@ const SearchTasks: FC<TSearchTaskProps> = ({ setTasks }) => {
     defaultValues: { substring: "" },
   })
   const { searchTasks, searchedTasks } = useSearchTasks()
-  const searchTaskDebounce = useCallback(
-    debounce((data: TSearchTask) => searchTasks(data), 444),
-    []
-  )
 
   const onSubmit: OnSubmitHandler<TSearchTask> = values => {
     console.log(values)
@@ -30,17 +28,18 @@ const SearchTasks: FC<TSearchTaskProps> = ({ setTasks }) => {
     setTasks(searchedTasks)
   }, [searchedTasks])
 
-  useEffect(() => {
-    if (!fieldsValues.substring || fieldsValues.substring.length < 4) return
-    searchTaskDebounce(fieldsValues)
-  }, [fieldsValues.substring])
   return (
     <Form handleSubmit={handleSubmit} onSubmitHandler={onSubmit}>
-      <Input
-        placeholder='Введите уровень сложности/категорию интересующих задач...'
-        register={register}
-        name='substring'
-      />
+      <div className='flex gap-2'>
+        <Input
+          placeholder='Введите уровень сложности/категорию интересующих задач...'
+          register={register}
+          name='substring'
+        />
+        <Button size='icon'>
+          <Search />
+        </Button>
+      </div>
     </Form>
   )
 }

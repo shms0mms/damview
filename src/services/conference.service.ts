@@ -7,10 +7,6 @@ import type {
 } from "@/types/conference"
 
 class ConferenceService {
-  // async get(id: string) {
-  //   const response = await axios.get<TConference>(`/conference/${id}`)
-  //   return response.data
-  // }
   private BASE_URL = "/interview"
 
   async create(data: TCreateConference) {

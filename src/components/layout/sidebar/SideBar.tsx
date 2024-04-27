@@ -34,10 +34,7 @@ const SideBar: FC = ({}) => {
           <TabsTrigger value='chat'>Чат с собеседователем</TabsTrigger>
           <TabsTrigger value='search'>Искать задачи</TabsTrigger>
         </TabsList>
-        <TabsContent
-          className='h-full pb-12 flex flex-col items-center'
-          value='description'
-        >
+        <TabsContent className='flex flex-col items-center' value='description'>
           <Task
             id={1}
             description='Даны два числа A и B. Вам нужно вычислить их сумму A+B. В этой задаче
@@ -54,7 +51,7 @@ const SideBar: FC = ({}) => {
           />
           <Button
             variant='ghost'
-            className='mt-auto flex gap-2'
+            className='mt-10 flex gap-2'
             onClick={() => {
               const link = `${window.location.origin}/room/${params.roomId}`
               try {
