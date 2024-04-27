@@ -5,17 +5,20 @@ import type {
   TConference,
 } from "@/types/conference"
 
-export const conferenceService = {
+class ConferenceService {
   // async get(id: string) {
   //   const response = await axios.get<TConference>(`/conference/${id}`)
   //   return response.data
-  // },
+  // }
+  private BASE_URL = "/interview"
 
   async create(data: TCreateConference) {
     const response = await axios.post<TConference>(
-      `/interview/create_room`,
+      `${this.BASE_URL}/create_room`,
       data
     )
     return response.data
-  },
+  }
 }
+
+export const conferenceService = new ConferenceService()
