@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from .models import Role
+from .models import Dif, Role
 
 
 
@@ -44,3 +44,5 @@ class TaskSchema(BaseModel):
     params:str
     
     tests:str  
+    
+    dificalty:Dif

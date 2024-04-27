@@ -52,7 +52,7 @@ async def add_in_webscoket(room_id, type,websocket,user_id):
         
         return True
     
-    webosckets = {"code":[],"chat":[]}
+    webosckets = {"code":[],"chat":[], "tasks":[]}
     webosckets[type] = [[user_id, websocket]]
     test_redis[name] = webosckets
         
@@ -85,9 +85,9 @@ async def delete_from_list(room_id, type,websocket,user_id, session:AsyncSession
             webosckets[type].remove([user_id, websocket])
         except:
             pass
-        if len(webosckets["code"]) == 0 and len(webosckets["chat"]) == 0  :
+        if len(webosckets["code"]) == 0 and len(webosckets["chat"]) == 0 and len(webosckets["tasks"]) == 0:
             test_redis.pop(name)
-            await session.delete(room)
+            # await session.delete(room)
             
 
         

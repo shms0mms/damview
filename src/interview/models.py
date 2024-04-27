@@ -10,6 +10,11 @@ class Role(Enum):
     interviewer = "interviewer"
     interviewee = "interviewee" 
 
+class Dif(Enum):
+    easy = "easy"
+    middle = "middle"
+    hard = "hard"
+
 class People(Base):
     
     __tablename__ ="people"
@@ -64,7 +69,7 @@ class Messages(Base):
 
 class CategoryTask(Base):
     
-    __tablename__ = "CategoryTask"
+    __tablename__ = "category_task"
     category_id:Mapped[int] = mapped_column(ForeignKey("category.id"),primary_key=True)
     
     task_id:Mapped[int] = mapped_column(ForeignKey("tasks.id"), primary_key=True)
@@ -83,7 +88,7 @@ class Category(Base):
 
     name:Mapped[str]
     
-    tasks:Mapped[list["Tasks"]] =relationship(uselist=True,secondary="CategoryTask")
+    tasks:Mapped[list["Tasks"]] =relationship(uselist=True,secondary="category_task", back_populates="category")
     
 
 
@@ -105,9 +110,12 @@ class Tasks(Base):
     
     exec_input:Mapped[str]
     
+    
     exec_answer:Mapped[str]
     
-    category:Mapped[list["Category"]] =relationship(uselist=True,secondary="CategoryTask")
+    dificalty:Mapped[Dif]
+    
+    category:Mapped[list["Category"]] =relationship(uselist=True,secondary="category_task", back_populates="tasks")
 
     params:Mapped[str]
     
