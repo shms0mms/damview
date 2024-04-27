@@ -5,9 +5,14 @@ import Disconnect from "@/components/ui/video/disconnect"
 import Video from "@/components/ui/video/video"
 import useLiveCoding from "@/hooks/useLiveCoding"
 import { EditorContext, TEditorContext } from "@/providers/EditorProvider"
+import { useParams } from "next/navigation"
+import { USER_ID } from "@/const/app.const"
+import { useLocalStorage } from "pidoras"
 
 const Room: FC = ({}) => {
-	const { message, sendCode } = useLiveCoding()
+	const { roomId } = useParams()
+	const { get } = useLocalStorage()
+	const { message, sendCode } = useLiveCoding(get(USER_ID), roomId.toString())
 	const { updateEditorValue } = useContext(
 		EditorContext as Context<TEditorContext>
 	)

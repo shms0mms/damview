@@ -1,10 +1,9 @@
 "use client"
-import { ROOM_ID, USER_ID } from "@/const/app.const"
 import { env } from "@/env"
 import { useEffect } from "react"
 import useWebSocket from "react-use-websocket"
 
-const useChat = (userId: number = USER_ID, roomId: string = ROOM_ID) => {
+const useChat = (userId: number, roomId: string) => {
 	const {
 		sendMessage: sendMessageToSocket,
 		readyState,
@@ -17,6 +16,7 @@ const useChat = (userId: number = USER_ID, roomId: string = ROOM_ID) => {
 	const sendMessage = (message: string) => {
 		sendMessageToSocket(message)
 	}
+
 	const connect = () => {}
 	const disconnect = () => {
 		socket?.close()

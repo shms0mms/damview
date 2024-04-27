@@ -1,7 +1,8 @@
 import _axios, { type CreateAxiosDefaults } from "axios"
+import { env } from "@/env"
 
 const options: CreateAxiosDefaults = {
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000",
+  baseURL: env.NEXT_PUBLIC_API_URL,
   headers: {
     "Content-Type": "application/json",
   },
