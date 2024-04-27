@@ -28,12 +28,11 @@ async def tests_task(task_id:int,code:str, session:AsyncSession):
             my_namespace = {}
             code =code.replace("\\n", "\n")
         
-        
             try:
                 exec(code, my_namespace)
                 
             except BaseException as e:
-                return e
+                return {"error": e}
             tests = json.loads(task.tests)
             results = []
             counts = 0

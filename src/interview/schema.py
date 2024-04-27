@@ -42,7 +42,7 @@ class TaskSchema(BaseModel):
     
     task:str
     
-    examples:list[ExampleSchema]
+    # examples:list[ExampleSchema]
     
     params:str
     

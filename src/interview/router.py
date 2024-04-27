@@ -37,7 +37,7 @@ async def alls(roomId:uuid.UUID, session:AsyncSession = Depends(get_session)):
 # _______________________filter-tasks_________________________________
 @app.get("/filter_tasks")
 async def tasks_filter( city_filter:FilterTasks = fastapi_filter.FilterDepends(FilterTasks),session:AsyncSession = Depends(get_session)):
-    query = city_filter.filter(select(Tasks).options(Tasks.category, selectinload(Tasks.examples)))
+    query = city_filter.filter(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)))
     result = await session.scalars(query)
     return result.all()
     
@@ -268,17 +268,17 @@ async def room_task(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
                     num = await websocket.receive_json()
                     
                     id_task = num.get("num")
+
                     if id_task and type(id_task) == int:
-                        task = await session.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == room.task_id))
+                        
+                        task = await session.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == id_task))
+                        await websocket.send_text(str(task.name))
                         if task:
                             w = await get_list(room_id=room_id, type="chat",websocket=websocket)
                             for  i in w:
-
-                                await i[1].send_json(task)
-                            async with ssession() as sess:
-                                    room = await sess.scalar(select(Room).options(selectinload(Room.messages),selectinload(Room.peoples), selectinload(Room.task)).where(Room.id == room_id))
-                                    room.task = task
-                                    sess.commit()
+                                await i[1].send_json({"task_id": task.id})
+                            room.task = task
+                            await session.commit()
                         else:
                             await websocket.send_json({"status":False})
                         
