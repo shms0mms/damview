@@ -53,6 +53,10 @@ async def alls( session:AsyncSession = Depends(get_session)):
     a = await session.scalars(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)))
     return a.all()   
 
+@app.get('/rooms')
+async def rooms(session:AsyncSession = Depends(get_session)):
+    room = await session.scalars(select(Room).options(selectinload(Room.messages),selectinload(Room.peoples), selectinload(Room.task)))
+    return room.all()
 
 @app.get("/last_task/{roomId}")
 async def alls(roomId:uuid.UUID, session:AsyncSession = Depends(get_session)):
@@ -72,7 +76,7 @@ async def alls(task_id:int, session:AsyncSession = Depends(get_session)):
         return task
     return "No execercicess"
 
-@app.get("/tasks/test")
+@app.post("/tasks/test")
 async def run_python_code(task_id:int,code:str, session:AsyncSession = Depends(get_session)):
     data = await tests_task(task_id=task_id, code=code, session=session)
     return data
@@ -262,34 +266,32 @@ async def room_task(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
             await websocket.accept()
         
             await add_in_webscoket(room_id=room_id, type="tasks",websocket=websocket,user_id=userId,session =session)
+            async def handle_websocket(websocket, user):
             
-            try:
-                while True:
-                    num = await websocket.receive_json()
-                    
-                    id_task = num.get("num")
+                try:
+                    while True:
+                        num = await websocket.receive_json()
+                        
+                        id_task = num.get("num")
+                        
+                        if id_task:
+                                room = await session.scalar(select(Room).options(selectinload(Room.messages),selectinload(Room.peoples), selectinload(Room.task)).where(Room.id == room_id))
+                                
+                                task = await session.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == id_task))
+                                if task:
+                                    room.task_id = task.id
 
-                    if id_task:
+                                    w = await get_list(room_id=room_id, type="tasks",websocket=websocket)
+                                    for  i in w:
+                                        await i[1].send_json({"task_id": task.id})
+                                    await session.commit()
 
+            
+                except WebSocketDisconnect:
+                
                         async with ssession() as sess:
-                            task = await sess.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == id_task))
-                            room.task = task
-                            await sess.commit()
-                            if task:
-                                w = await get_list(room_id=room_id, type="chat",websocket=websocket)
-                                for  i in w:
-                                    await i[1].send_json({"task_id": task.id})
-
-                            else:
-                                await websocket.send_json({"status":False})
-                    else:
-                            await websocket.send_json({"status":False})   
-            
-            except WebSocketDisconnect:
-            
-                    async with ssession() as sess:
-                        await delete_from_list(room_id=room_id, type="tasks",websocket=websocket,user_id=userId, session=sess)
-            
+                            await delete_from_list(room_id=room_id, type="tasks",websocket=websocket,user_id=userId, session=sess)
+            await asyncio.gather(handle_websocket(websocket, user))
             # task = {
             #     "name":room.task.name,
             #     "task":room.task.task,
@@ -300,3 +302,16 @@ async def room_task(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
             #         }
             
 
+                    #     async with ssession() as sess:
+                    #         task = await sess.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == id_task))
+                    #         room.task = task
+                    #         await sess.commit()
+                    #         if task:
+                    #             w = await get_list(room_id=room_id, type="chat",websocket=websocket)
+                    #             for  i in w:
+                    #                 await i[1].send_json({"task_id": task.id})
+
+                    #         else:
+                    #             await websocket.send_json({"status":False})
+                    # else:
+                    #         await websocket.send_json({"status":False})   

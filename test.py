@@ -67,12 +67,12 @@
 
 print("def main(nums,target):\n        left, right = 0, len(nums) - 1\n        while left <= right:\n            mid = left + (right - left) // 2\n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n        return left")
 
-# {
-# "name": "Search Insert Position",
-# "task": "Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. You must write an algorithm with O(log n) runtime complexity.",
-# "exec_input": "2",
-# "exec_answer": "nums = [1,3,5,6], target = 5",
-# "params": "nums,target",
-# "tests": [{"input": {"nums":[1,3,5,6],"target":7}, "answer": 4}, {"input": {"nums":[1,3,5,6],"target":2}, "answer": 1}],
-# "dificalty": "easy"
-# }
+{
+"name": "Search Insert Position",
+"task": "Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. You must write an algorithm with O(log n) runtime complexity.",
+"exec_input": "2",
+"exec_answer": "nums = [1,3,5,6], target = 5",
+"params": "nums,target",
+"tests": [{"input": {"nums":[1,3,5,6],"target":7}, "answer": 4}, {"input": {"nums":[1,3,5,6],"target":2}, "answer": 1}],
+"dificalty": "easy"
+}
