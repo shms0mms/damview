@@ -15,6 +15,7 @@ from .schema import PeopleAdd, ResponeAfterCreate
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from ..db  import get_session,session as ssession
 from .utils import *
+from .tests_task import tests_task
 
 
 app = APIRouter(prefix="/interview", tags=["interview"])
@@ -65,7 +66,11 @@ async def alls(roomId:uuid.UUID, session:AsyncSession = Depends(get_session)):
 
 
 
-@app
+@app.get("/tasks/test")
+async def run_python_code(task_id:int,code:str, session:AsyncSession = Depends(get_session)):
+    data = await tests_task(task_id=task_id, code=code, session=session)
+    return data
+
 
 # ________________point work with room______________________________
 
@@ -199,11 +204,8 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
             
             await add_in_webscoket(room_id=room_id, type="chat",websocket=websocket,user_id=userId)
 
-            people = []
-            for i in room.peoples:
-                people.append({"fio":i.fio, "role":i.role.value})
-                
-            await websocket.send_json(str(people))        
+
+            await websocket.send_json(room.peoples)        
             
             async def handle_websocket(websocket, user):
             

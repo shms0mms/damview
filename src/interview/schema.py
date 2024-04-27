@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 from pydantic import BaseModel
 from .models import Dif, Role
@@ -43,6 +44,6 @@ class TaskSchema(BaseModel):
     
     params:str
     
-    tests:str  
+    tests:list[dict] | str 
     
     dificalty:Dif

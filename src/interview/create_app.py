@@ -1,4 +1,5 @@
 import asyncio
+import json
 import uuid
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy import select
@@ -30,6 +31,9 @@ async def create_category(name:str,session:AsyncSession = Depends(get_session)):
 
 @app.post("/create_task")
 async def create_task(task:TaskSchema,session:AsyncSession = Depends(get_session)):
+
+    task.tests = json.dumps(task.tests)
+    
     task = Tasks(**task.model_dump() )
     session.add(task)
     
