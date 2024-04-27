@@ -64,7 +64,13 @@ async def alls(roomId:uuid.UUID, session:AsyncSession = Depends(get_session)):
         return task
     return "No execercicess"
 
-
+@app.get("/task/{task_id}")
+async def alls(task_id:int, session:AsyncSession = Depends(get_session)):
+    
+    task = await session.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == task_id))
+    if task:
+        return task
+    return "No execercicess"
 
 @app.get("/tasks/test")
 async def run_python_code(task_id:int,code:str, session:AsyncSession = Depends(get_session)):
