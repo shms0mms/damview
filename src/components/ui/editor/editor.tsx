@@ -11,9 +11,11 @@ import "codemirror/theme/material.css"
 require("codemirror/mode/python/python")
 require("codemirror/addon/hint/show-hint.css")
 require("codemirror/addon/hint/show-hint.js")
-export interface IEditor {}
+export interface IEditor {
+	sendCode: (message: string) => void
+}
 
-const Editor: FC<IEditor> = ({}) => {
+const Editor: FC<IEditor> = ({ sendCode }) => {
 	const { editorValue, editorLanguage, updateEditorValue, setRef } = useContext(
 		EditorContext as Context<TEditorContext>
 	)
@@ -36,7 +38,7 @@ const Editor: FC<IEditor> = ({}) => {
 			.join("\n")
 
 	return (
-		<div className="flex bg-editor relative flex-col h-full w-full">
+		<div className="flex overflow-hidden bg-editor relative flex-col h-full w-full">
 			<EditorHeader />
 			<div className="flex flex-col w-full h-full my-24">
 				<CodeMirror
@@ -54,6 +56,7 @@ const Editor: FC<IEditor> = ({}) => {
 					onChange={(editor, data, value) => {
 						updateEditorValue(value)
 						set(EDITOR_VALUE_PYTHON, value.split("\n"))
+						sendCode(value)
 					}}
 					editorDidMount={e => {
 						editor.current = e

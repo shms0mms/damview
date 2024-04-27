@@ -11,9 +11,9 @@ const ChatMessages: FC<IChatMessages> = ({ messages, isLoading }) => {
 	return (
 		<div className="px-2 py-5 flex w-full h-full flex-[1_1_auto]">
 			{messages.length ? (
-				<div className="flex flex-col w-full gap-5 h-full">
-					{messages.map(m => (
-						<Message key={m.id} {...m} />
+				<div className="flex flex-col w-full overflow-auto gap-5 h-full">
+					{messages.map((m, pk) => (
+						<Message key={pk} {...m} />
 					))}
 				</div>
 			) : isLoading ? (

@@ -1,10 +1,10 @@
 import BaseLayout from "@/components/layout/BaseLayout"
-import Editor from "@/components/ui/editor/editor"
+import Room from "./Room"
 
 export default function EditorPage() {
 	return (
 		<BaseLayout withR>
-			<Editor />
+			<Room />
 		</BaseLayout>
 	)
 }

@@ -8,37 +8,49 @@ import { Form, OnSubmitHandler, useForm } from "react-mms-form"
 interface FormData {
 	message: string
 }
-const ChatControl: FC = ({}) => {
+interface IChatControl {
+	sendMessage: (message: string) => void
+}
+const ChatControl: FC<IChatControl> = ({ sendMessage }) => {
 	const {
 		handleSubmit,
 		register,
 		formState: { errors },
 		updateField,
 		fields,
+		fieldsValues,
 	} = useForm<FormData>({
 		withLocalStorage: ["message"],
 	})
 	const onSubmit: OnSubmitHandler<FormData> = data => {
-		console.log(data.message || "")
 		updateField("message", {
 			...fields.message,
 			value: "",
 		})
+
+		if (data.message) sendMessage(data.message)
 	}
+
 	const ref = useRef<HTMLInputElement>(null)
 	useEffect(() => {
-		if (typeof window !== "undefined") {
-			window.addEventListener("keydown", e => {
-				if (ref.current && e.key === "Enter") {
-					console.log(ref.current.value)
+		const onKeyDown = (e: KeyboardEvent) => {
+			if (ref.current && e.key === "Enter") {
+				if (ref.current.value !== "") {
+					sendMessage(ref.current.value)
 					updateField("message", {
 						...fields.message,
 						value: "",
 					})
 				}
-			})
+			}
 		}
-	}, [ref.current])
+		if (typeof window !== "undefined")
+			window.addEventListener("keydown", onKeyDown)
+
+		return () => {
+			window.removeEventListener("keydown", onKeyDown)
+		}
+	}, [ref.current && ref.current.value])
 	return (
 		<Form
 			handleSubmit={handleSubmit}

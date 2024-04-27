@@ -1,15 +1,10 @@
-import { Role } from "@/types/user"
 import { FC } from "react"
+import { type Member as TMember } from "@/types/chat"
 
-export interface IMember {
-	name: string
-	role: Role
-}
-
-const Member: FC<IMember> = ({ name, role }) => {
+const Member: FC<TMember> = ({ fio, role }) => {
 	return (
 		<div className="flex items-center justify-between gap-5">
-			<div className="flex items-center gap-1">{name}</div>
+			<div className="flex items-center gap-1">{fio}</div>
 			<div className="opacity-30">
 				{role === "interviewee" ? "Участник" : "Собеседователь"}
 			</div>

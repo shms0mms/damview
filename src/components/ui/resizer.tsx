@@ -12,7 +12,7 @@ const Resizer: FC = ({}) => {
 	useEffect(() => {
 		const handleMouseMove = (e: MouseEvent) => {
 			if (isResizing) {
-				const width = startWidth + (e.pageX - startX)
+				const width = startWidth + (e.pageX - startX / 2)
 				if (ref?.current && width > 400) ref.current.style.width = width + "px"
 			}
 		}
@@ -38,7 +38,7 @@ const Resizer: FC = ({}) => {
 	return (
 		<div
 			ref={resizeRef}
-			className="w-[20px] h-full bg-muted cursor-col-resize flex items-center justify-center"
+			className="min-w-[16px] h-full bg-muted cursor-col-resize flex items-center justify-center"
 		></div>
 	)
 }

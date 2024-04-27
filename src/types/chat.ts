@@ -1,6 +1,12 @@
+import { Role } from "./user"
+
 export interface Message {
-	id: number
 	message: string
-	name: string
+	fio: string
 	isMe?: boolean
+}
+
+export interface Member {
+	fio: string
+	role: Role
 }
