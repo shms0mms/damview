@@ -5,10 +5,7 @@ import { TaskContext, type TTaskContext } from "@/providers/TaskProvider"
 import { Context, useContext, useEffect } from "react"
 import useWebSocket from "react-use-websocket"
 
-export const useSetTask = (
-  userId: number = USER_ID,
-  roomId: string = ROOM_ID
-) => {
+export const useSetTask = (userId: number, roomId: string) => {
   const {
     sendMessage: sendMessageToSocket,
     getWebSocket,
