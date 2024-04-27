@@ -42,10 +42,14 @@ from fastapi import Depends
 test_redis ={}
 
 
-async def add_in_webscoket(room_id, type,websocket,user_id):
+async def add_in_webscoket(room_id, type,websocket,user_id, session):
     
     name = str(room_id)
     webosckets =test_redis.get(name)
+    
+    user:People = await session.scalar(select(People).where(People.id == user_id))
+    user.room_id = room_id
+    await session.commit()
     
     if webosckets:
         webosckets[type].append([user_id, websocket])

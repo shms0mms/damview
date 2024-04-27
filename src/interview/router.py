@@ -159,7 +159,7 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
 
     if room and user:
     
-        await add_in_webscoket(room_id=room_id, type="code",websocket=websocket,user_id=userId)
+        await add_in_webscoket(room_id=room_id, type="code",websocket=websocket,user_id=userId,session =session)
 
         await websocket.accept()
         await websocket.send_text(str(room.code))   
@@ -208,14 +208,16 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
         
             
             
-            await add_in_webscoket(room_id=room_id, type="chat",websocket=websocket,user_id=userId)
+            await add_in_webscoket(room_id=room_id, type="chat",websocket=websocket,user_id=userId,session=session)
 
 
-            await websocket.send_json(room.peoples)        
+            people = []
+            for i in room.peoples:
+                people.append({"fio":i.fio, "role":i.role.value})
+
+            await websocket.send_json(people)
             
-            async def handle_websocket(websocket, user):
-            
-                try:
+            try:
             
                     while True:
                         
@@ -233,14 +235,13 @@ async def room_work(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
                             await websocket2[1].send_json({"message":text, "fio":user.fio,"id":message_id})
 
             
-                except WebSocketDisconnect:
+            except WebSocketDisconnect:
             
                     async with ssession() as sess:
                         await delete_from_list(room_id=room_id, type="chat",websocket=websocket,user_id=userId, session=sess)
 
 
 
-            await asyncio.gather(handle_websocket(websocket, user))
             
          
          
@@ -256,7 +257,7 @@ async def room_task(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
         if user:
             await websocket.accept()
         
-            await add_in_webscoket(room_id=room_id, type="tasks",websocket=websocket,user_id=userId)
+            await add_in_webscoket(room_id=room_id, type="tasks",websocket=websocket,user_id=userId,session =session)
             
             try:
                 while True:
