@@ -269,19 +269,21 @@ async def room_task(room_id:uuid.UUID,userId:int, websocket:WebSocket, session:A
                     
                     id_task = num.get("num")
 
-                    if id_task and type(id_task) == int:
-                        
-                        task = await session.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == id_task))
-                        await websocket.send_text(str(task.name))
-                        if task:
-                            w = await get_list(room_id=room_id, type="chat",websocket=websocket)
-                            for  i in w:
-                                await i[1].send_json({"task_id": task.id})
+                    if id_task:
+
+                        async with ssession() as sess:
+                            task = await sess.scalar(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)).where(Tasks.id == id_task))
                             room.task = task
-                            await session.commit()
-                        else:
-                            await websocket.send_json({"status":False})
-                        
+                            await sess.commit()
+                            if task:
+                                w = await get_list(room_id=room_id, type="chat",websocket=websocket)
+                                for  i in w:
+                                    await i[1].send_json({"task_id": task.id})
+
+                            else:
+                                await websocket.send_json({"status":False})
+                    else:
+                            await websocket.send_json({"status":False})   
             
             except WebSocketDisconnect:
             
