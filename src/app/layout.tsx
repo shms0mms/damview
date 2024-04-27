@@ -4,26 +4,32 @@ import { play } from "@/styles/fonts"
 import ThemeProvider from "@/providers/ThemeProvider"
 import EditorProvider from "@/providers/EditorProvider"
 import ResizeProvider from "@/providers/ResizeProvider"
+import ReactQueryProvider from "@/providers/ReactQueryProvider"
+import ToastProvider from "@/providers/ToastProvider"
 
 export const metadata: Metadata = {
-	title: "Damview",
-	description: "Interview your employees and check their programming level",
+  title: "Damview",
+  description: "Interview your employees and check their programming level",
 }
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode
+  children: React.ReactNode
 }>) {
-	return (
-		<html lang="en">
-			<body className={play.className}>
-				<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-					<ResizeProvider>
-						<EditorProvider>{children} </EditorProvider>
-					</ResizeProvider>
-				</ThemeProvider>
-			</body>
-		</html>
-	)
+  return (
+    <html lang='en'>
+      <body className={play.className}>
+        <ReactQueryProvider>
+          <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+            <ToastProvider>
+              <ResizeProvider>
+                <EditorProvider>{children}</EditorProvider>
+              </ResizeProvider>
+            </ToastProvider>
+          </ThemeProvider>
+        </ReactQueryProvider>
+      </body>
+    </html>
+  )
 }
