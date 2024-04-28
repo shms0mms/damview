@@ -5,10 +5,21 @@ import { notify } from "@/utils/notify.utils"
 import { EditorContext, TEditorContext } from "@/providers/EditorProvider"
 import { Download } from "lucide-react"
 import { ICON_SIZE } from "@/const/icon.const"
-const EditorHeader: FC = ({}) => {
-	const { updateEditorValue } = useContext(
+import { TTaskContext, TaskContext } from "@/providers/TaskProvider"
+import { UseMutateFunction } from "@tanstack/react-query"
+const EditorHeader: FC<{
+	mutate: UseMutateFunction<
+		any,
+		Error,
+		{ taskId: number; code: string },
+		unknown
+	>
+}> = ({ mutate }) => {
+	const { updateEditorValue, editorValue } = useContext(
 		EditorContext as Context<TEditorContext>
 	)
+	const { task } = useContext(TaskContext as Context<TTaskContext>)
+
 	return (
 		<div className="text-sm p-4 flex items-center justify-between absolute z-10 w-full border-[0px] border-solid border-b-[1px] border-b-back top-0 left-0 ">
 			<EditorLanguage />
@@ -35,7 +46,18 @@ const EditorHeader: FC = ({}) => {
 
 					<Download width={ICON_SIZE.DEFAULT} height={ICON_SIZE.DEFAULT} />
 				</Button>
-				<Button size={"sm"}>Отправить</Button>
+				{!!task?.id && (
+					<Button
+						onClick={() => {
+							const code = editorValue
+
+							mutate({ taskId: task.id, code })
+						}}
+						size={"sm"}
+					>
+						Отправить
+					</Button>
+				)}
 			</div>
 		</div>
 	)

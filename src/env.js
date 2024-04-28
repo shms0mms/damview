@@ -15,6 +15,9 @@ export const env = createEnv({
 	client: {
 		NEXT_PUBLIC_API_URL: z.string().url().default("http://localhost:8000"),
 		NEXT_PUBLIC_WEBSOCKET_URL: z.string().url().default("WS://localhost:8000"),
+		NEXT_PUBLIC_AGORA_APP_ID: z.string(),
+		NEXT_PUBLIC_AGORA_TOKEN: z.string(),
+		NEXT_PUBLIC_AGORA_CHANNEL_NAME: z.string(),
 	},
 	/**
 	 * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
@@ -23,6 +26,9 @@ export const env = createEnv({
 	runtimeEnv: {
 		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
 		NEXT_PUBLIC_WEBSOCKET_URL: process.env.NEXT_PUBLIC_WEBSOCKET_URL,
+		NEXT_PUBLIC_AGORA_APP_ID: process.env.NEXT_PUBLIC_AGORA_APP_ID,
+		NEXT_PUBLIC_AGORA_TOKEN: process.env.NEXT_PUBLIC_AGORA_TOKEN,
+		NEXT_PUBLIC_AGORA_CHANNEL_NAME: process.env.NEXT_PUBLIC_AGORA_CHANNEL_NAME,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

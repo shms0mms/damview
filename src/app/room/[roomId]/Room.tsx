@@ -1,32 +1,36 @@
 "use client"
 import { Context, FC, useContext, useEffect } from "react"
 import Editor from "@/components/ui/editor/editor"
-import Disconnect from "@/components/ui/video/disconnect"
-import Video from "@/components/ui/video/video"
+import Disconnect from "@/components/video/disconnect"
 import useLiveCoding from "@/hooks/useLiveCoding"
 import { EditorContext, TEditorContext } from "@/providers/EditorProvider"
 import { useParams } from "next/navigation"
 import { USER_ID } from "@/const/app.const"
-import { useLocalStorage } from "pidoras"
+import VideoRoom from "@/components/video/VideoRoom"
 
 const Room: FC = ({}) => {
 	const { roomId } = useParams()
-	const { get } = useLocalStorage()
-	const { message, sendCode } = useLiveCoding(get(USER_ID), roomId.toString())
-	const { updateEditorValue } = useContext(
+	const userId = localStorage.getItem(USER_ID) || ""
+
+	const { message, sendCode } = useLiveCoding(Number(userId), roomId.toString())
+	const { updateEditorValue, editorValue } = useContext(
 		EditorContext as Context<TEditorContext>
 	)
+
 	useEffect(() => {
-		updateEditorValue(message)
-	}, [message])
+		if (message) {
+			message.replaceAll('"', "")
+
+			updateEditorValue(message)
+		}
+	}, [message?.length || editorValue === ""])
 
 	return (
 		<>
-			<div className="h-full w-full flex flex-col">
+			<div className="h-full w-full flex flex-col relative">
 				<div className="h-full w-full flex items-center gap-5 relative">
-					<Video isMicrophone={true} isVideo={true} />
-					<Video isVideo={false} isMicrophone={false} />
 					<Disconnect />
+					<VideoRoom />
 				</div>
 
 				<Editor sendCode={sendCode} />

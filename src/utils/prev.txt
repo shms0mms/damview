@@ -1,0 +1,105 @@
+import { useEffect, useState } from "react"
+import AgoraRTC, {
+	IAgoraRTCRemoteUser,
+	IMicrophoneAudioTrack,
+	ICameraVideoTrack,
+} from "agora-rtc-sdk-ng"
+import { env } from "@/env"
+import Video from "./video"
+import Loader from "../ui/loader"
+const APP_ID = env.NEXT_PUBLIC_AGORA_APP_ID
+const CHANNEL = env.NEXT_PUBLIC_AGORA_CHANNEL_NAME
+const TOKEN = env.NEXT_PUBLIC_AGORA_TOKEN
+const client = AgoraRTC.createClient({
+	mode: "rtc",
+	codec: "vp8",
+})
+export interface UserVideo {
+	uid: number
+	videoTrack: Record<string, any>
+	audioTrack: Record<string, any>
+}
+export type MediaType = "video" | "audio"
+export const VideoRoom = () => {
+	const [users, setUsers] = useState<IAgoraRTCRemoteUser[]>([])
+	const [localTracks, setLocalTracks] = useState<
+		[IMicrophoneAudioTrack, ICameraVideoTrack] | []
+	>([])
+
+	const handleUserJoined = async (
+		user: IAgoraRTCRemoteUser,
+		mediaType: MediaType
+	) => {
+		await client.subscribe(user, mediaType)
+
+		if (mediaType === "video") {
+			setUsers(previousUsers => [...previousUsers, user])
+		}
+
+		if (mediaType === "audio") {
+			user.audioTrack?.play()
+		}
+	}
+
+	const handleUserLeft = (user: IAgoraRTCRemoteUser) => {
+		setUsers(state => state.filter(u => u.uid === user.uid))
+	}
+
+	useEffect(() => {
+		client.on("user-published", handleUserJoined)
+		client.on("user-left", handleUserLeft)
+		const isConnecting =
+			client.connectionState === "CONNECTING" ||
+			client.connectionState === "CONNECTED"
+
+		if (!isConnecting)
+			client
+				.join(APP_ID, CHANNEL, TOKEN, null)
+				.then(uid =>
+					Promise.all([AgoraRTC.createMicrophoneAndCameraTracks(), uid])
+				)
+				.then(([tracks, uid]) => {
+					const [audioTrack, videoTrack] = tracks
+					setLocalTracks(tracks)
+					setUsers(
+						state =>
+							[
+								...state,
+								{
+									uid,
+									audioTrack,
+									videoTrack,
+								},
+							] as IAgoraRTCRemoteUser[]
+					)
+					client.publish(tracks)
+				})
+
+		return () => {
+			for (let localTrack of localTracks) {
+				localTrack.stop()
+				localTrack.close()
+			}
+			client.off("user-published", handleUserJoined)
+			client.off("user-left", handleUserLeft)
+			// client.unpublish(tracks).then(() => client.leave())
+		}
+	}, [])
+	console.log(users)
+
+	return (
+		<>
+			{users.length ? (
+				<div className="flex w-full h-full items-center ">
+					{users.map(user => (
+						<Video isMicrophone key={user.uid} isVideo user={user} />
+					))}
+				</div>
+			) : (
+				<div className="w-full h-full flex items-center justify-center">
+					<Loader />
+				</div>
+			)}
+		</>
+	)
+}

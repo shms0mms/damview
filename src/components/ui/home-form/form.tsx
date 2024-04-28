@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { Input } from "../input"
 import { Label } from "../label"
-import { USER_ID } from "@/const/app.const"
+import { ROLE, USER_ID } from "@/const/app.const"
 import { useLocalStorage } from "pidoras"
 
 const Form: FC = () => {
@@ -32,6 +32,7 @@ const Form: FC = () => {
 		if (!newConference) return
 
 		set(USER_ID, newConference.userId)
+		set(ROLE, newConference?.role)
 		redirect(`/room/${newConference.roomId}`)
 	}, [newConference])
 

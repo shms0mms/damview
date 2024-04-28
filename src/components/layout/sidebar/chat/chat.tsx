@@ -12,7 +12,7 @@ import { useParams } from "next/navigation"
 
 const Chat: FC = ({}) => {
 	const { roomId } = useParams()
-	const myFio = localStorage.getItem(FIO)
+	const myFio = JSON.parse(JSON.stringify(localStorage.getItem(FIO)))
 	const _userId = localStorage.getItem(USER_ID)
 	const userId = Number(_userId) || 1
 	const { sendMessage, message } = useChat(userId, roomId.toString())
@@ -25,11 +25,13 @@ const Chat: FC = ({}) => {
 
 	useEffect(() => {
 		if (data?.length) {
-			const messages = data.map((d: any) => ({
-				...d.user,
-				message: d.message,
-				isMe: myFio === d.user.fio ? true : false,
-			}))
+			const messages = data.map((d: any) => {
+				return {
+					...d.user,
+					message: d.message,
+					isMe: myFio === d.user.fio ? true : false,
+				}
+			})
 
 			setMessages(messages)
 		}
@@ -43,6 +45,7 @@ const Chat: FC = ({}) => {
 				...state,
 				{ ...message, isMe: myFio === message.fio ? true : false } as Message,
 			])
+
 		if (message?.length) {
 			for (let i = 0; i < message?.length; i++) {
 				setMembers(state => [...state, message[i]])

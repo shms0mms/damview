@@ -15,3 +15,12 @@ export enum Role {
 	INTERVIEWER = "interviewer",
 	INTERVIEWEE = "interviewee",
 }
+export type TCreateConferenceResponse = {
+	roomId: string
+	role: Role
+	userId: number
+}
+export type TLogInConference = {
+	roomId: string
+} & TCreateConference
+export type TLogInConferenceResponse = TCreateConferenceResponse

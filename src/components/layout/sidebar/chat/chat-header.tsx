@@ -24,7 +24,7 @@ const ChatHeader: FC<IChatHeader> = ({ members }) => {
 			<div className="flex items-start flex-col gap-1">
 				<Title className="text-sm">Чат с собеседователем</Title>
 
-				<Dialog>
+				{/* <Dialog>
 					<DialogTrigger asChild>
 						<button onClick={() => {}}>
 							{members.length ?? "Нету"} учатсников
@@ -42,7 +42,7 @@ const ChatHeader: FC<IChatHeader> = ({ members }) => {
 							</DialogDescription>
 						</DialogHeader>
 					</DialogContent>
-				</Dialog>
+				</Dialog> */}
 			</div>
 		</div>
 	)

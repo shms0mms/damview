@@ -21,6 +21,7 @@ import { FC, PropsWithChildren } from "react"
 
 const EditorProvider: FC<PropsWithChildren<unknown>> = ({ children }) => {
 	const [editorValue, updateEditorValue] = useState("")
+
 	const [editorLanguage, updateEditorLanguage] = useState<EditorLanguage>(
 		EnumLanguage.python
 	)

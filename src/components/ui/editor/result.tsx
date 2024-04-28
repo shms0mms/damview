@@ -8,13 +8,13 @@ import Title from "../title"
 import Test from "./test"
 import Loader from "../loader"
 
-const Result: FC<ResultFromTest> = ({ allTests, passTests, result }) => {
+const Result: FC<ResultFromTest> = ({ allTests, passTests, result, error }) => {
 	const [isVisible, updateVisibled] = useState(false)
 	const isSuccess = allTests == passTests
 	const errorTests = allTests - passTests
 	const sizes = "w-7 h-7"
 	return (
-		<div className="p-6 absolute bottom-0 left-0 w-full z-10 bg-editor">
+		<div className="p-6 absolute bottom-0 left-0 w-full z-20 bg-editor">
 			<div
 				className={`mb-6 ${
 					isVisible && "border-b-[1px] border-t-[1px]"
@@ -23,28 +23,45 @@ const Result: FC<ResultFromTest> = ({ allTests, passTests, result }) => {
 				}`}
 			>
 				<div className={"transition-all duration-300 min-h-0"}>
-					<div className="flex flex-col gap-5 py-6 transition-all duration-300">
-						<div className="flex items-center gap-2">
-							<Title className="text-sm">Результат выполнения программы</Title>
-
+					{!!allTests ? (
+						<div className="flex flex-col gap-5 py-6 transition-all duration-300">
 							<div className="flex items-center gap-2">
-								<Circle className={`${sizes} bg-green-500`}>{passTests}</Circle>
-								<Circle className={`${sizes} bg-slate-500`}>{allTests}</Circle>
-								<Circle className={`${sizes} bg-red-500`}>
-									{isSuccess ? 0 : errorTests}
-								</Circle>
+								<Title className="text-sm">
+									Результат выполнения программы
+								</Title>
+
+								<div className="flex items-center gap-2">
+									<Circle className={`${sizes} bg-green-500`}>
+										{passTests}
+									</Circle>
+									<Circle className={`${sizes} bg-slate-500`}>
+										{allTests}
+									</Circle>
+									<Circle className={`${sizes} bg-red-500`}>
+										{isSuccess ? 0 : errorTests}
+									</Circle>
+								</div>
+							</div>
+							<div className="flex flex-col gap-5">
+								{result?.length ? (
+									result.map((r, pk) => <Test key={pk} {...r} />)
+								) : (
+									<Loader />
+								)}
 							</div>
 						</div>
-						<div className="flex flex-col gap-5">
-							{result.length ? (
-								result.map((r, pk) => <Test key={pk} {...r} />)
-							) : (
-								<Loader />
-							)}
-						</div>
-					</div>
+					) : error ? (
+						<Title className="text-red-500 text-base p-6">
+							Ошибка в решении задачи, проверьте отступы
+						</Title>
+					) : (
+						<Title className="text-base p-6">
+							Вы еще не отправляли решение к задаче
+						</Title>
+					)}
 				</div>
 			</div>
+
 			<button
 				className="flex items-center gap-1"
 				onClick={() => updateVisibled(!isVisible)}

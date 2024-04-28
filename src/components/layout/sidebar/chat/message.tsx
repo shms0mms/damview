@@ -5,7 +5,7 @@ import { User } from "lucide-react"
 import { FC } from "react"
 
 const Message: FC<Message> = ({ message, fio, isMe }) => {
-	const firstName = fio.split(" ")[0]
+	const firstName = fio?.split(" ")[0]
 	return (
 		<div
 			className={`flex flex-col-reverse w-full gap-1 ${!isMe && "items-end"}`}

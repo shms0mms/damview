@@ -9,7 +9,7 @@ export interface IChatMessages {
 const ChatMessages: FC<IChatMessages> = ({ messages, isLoading }) => {
 	const center = "flex items-center justify-center w-full h-full"
 	return (
-		<div className="px-2 py-5 flex w-full h-full flex-[1_1_auto]">
+		<div className="px-2 py-5 mb-20  flex w-full h-full flex-[1_1_auto]">
 			{messages.length ? (
 				<div className="flex flex-col w-full overflow-auto gap-5 h-full">
 					{messages.map((m, pk) => (

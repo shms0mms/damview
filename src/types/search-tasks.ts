@@ -1,3 +1,3 @@
-import type { Role } from "./user"
+import { Difficulty } from "./task"
 
-export type TSearchTask = { task: string; role: Role }
+export type TSearchTask = { name__like: string; dificalty: Difficulty }
