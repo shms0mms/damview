@@ -51,3 +51,8 @@ class TaskSchema(BaseModel):
     tests:list[dict] | str 
     
     dificalty:Dif
+
+
+class ResponseTest(BaseModel):
+    task_id: int 
+    code: str
