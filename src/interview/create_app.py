@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from .models import Messages, People, Room, Category, Tasks
+from .models import Messages, People, Room, Category, Tasks, Examples
 from .schema import *
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from ..db  import get_session,session as ssession
@@ -27,6 +27,15 @@ async def create_category(name:str,session:AsyncSession = Depends(get_session)):
     return categories.all()
 
 
+@app.post("/create_example")
+async def create_example(ex:Exam,session:AsyncSession = Depends(get_session)):
+    e  =Examples(**ex.model_dump())
+    session.add(e)
+    await session.commit()
+    
+    es = await session.scalars(select(Examples))
+    
+    return es.all()
 
 
 @app.post("/create_task")
@@ -39,7 +48,7 @@ async def create_task(task:TaskSchema,session:AsyncSession = Depends(get_session
     
     await session.commit()
     
-    tasks = await session.scalars(select(Tasks).options(selectinload(Tasks.category)))
+    tasks = await session.scalars(select(Tasks).options(selectinload(Tasks.category), selectinload(Tasks.examples)))
     
     return tasks.all()
 
@@ -50,8 +59,9 @@ async def add_category(id_cat:int,id_task:int, session:AsyncSession = Depends(ge
     task = await session.scalar(select(Tasks).options(selectinload(Tasks.category)).where(Tasks.id == id_task))
     category = await session.scalar(select(Category).options(selectinload(Category.tasks)).where(Category.id == id_cat))
     
-    task.category = category
+    task.category.append(category) 
     
     await session.commit()
     
     return True
+

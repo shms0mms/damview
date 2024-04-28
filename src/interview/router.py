@@ -11,7 +11,7 @@ from .filters import FilterTasks
 
 
 from .models import Messages, People, Room, Tasks
-from .schema import PeopleAdd, ResponeAfterCreate, ResponseTest, TaskSchema
+from .schema import PeopleAdd, ResponeAfterCreate, TaskSchema,ResponseTest
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from ..db  import get_session,session as ssession
 from .utils import *
@@ -77,7 +77,7 @@ async def alls(task_id:int, session:AsyncSession = Depends(get_session)):
     return "No execercicess"
 
 @app.post("/tasks/test")
-async def run_python_code(data: ResponseTest, session:AsyncSession = Depends(get_session)):
+async def run_python_code(data:ResponseTest, session:AsyncSession = Depends(get_session)):
     data = await tests_task(task_id=data.task_id, code=data.code, session=session)
     return data
 

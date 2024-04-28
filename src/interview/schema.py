@@ -7,8 +7,6 @@ from .models import Dif, Role
 
 
 
-
-
 class PeopleAdd(BaseModel):
     fio:str
     role:Role
@@ -36,6 +34,10 @@ class ExampleSchema(BaseModel):
     enter:str
     out:str
 
+class Exam(BaseModel):
+    out:str
+    enter:str
+    task_id:int
 class TaskSchema(BaseModel):
     
     name:str
@@ -49,7 +51,3 @@ class TaskSchema(BaseModel):
     tests:list[dict] | str 
     
     dificalty:Dif
-
-class ResponseTest(BaseModel):
-    code: str 
-    task_id: int
